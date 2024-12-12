@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Santa's Christmas Race</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #a8d0e6;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #raceInfo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div id="raceInfo">Press SPACE to make Santa go faster!</div>
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const santaImg = new Image();
+        santaImg.src = "https://i.imgur.com/OeTmt3x.png"; // Santa image URL (replace with your own if needed)
+
+        const roadImg = new Image();
+        roadImg.src = "https://i.imgur.com/x60LMHt.jpg"; // Road image URL (replace with your own if needed)
+
+        let santaX = 50;
+        let santaY = canvas.height / 2 - 50;
+        let santaSpeed = 2;
+
+        let roadOffset = 0;
+
+        function drawBackground() {
+            roadOffset -= santaSpeed;
+            if (roadOffset <= -canvas.width) {
+                roadOffset = 0;
+            }
+            ctx.drawImage(roadImg, roadOffset, 0, canvas.width, canvas.height);
+            ctx.drawImage(roadImg, roadOffset + canvas.width, 0, canvas.width, canvas.height);
+        }
+
+        function drawSanta() {
+            ctx.drawImage(santaImg, santaX, santaY, 100, 100);
+        }
+
+        function update() {
+            drawBackground();
+            drawSanta();
+        }
+
+        function loop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            update();
+            requestAnimationFrame(loop);
+        }
+
+        document.addEventListener("keydown", (e) => {
+            if (e.code === "Space") {
+                santaSpeed = 5;
+            }
+        });
+
+        document.addEventListener("keyup", (e) => {
+            if (e.code === "Space") {
+                santaSpeed = 2;
+            }
+        });
+
+        santaImg.onload = () => {
+            roadImg.onload = () => {
+                loop();
+            };
+        };
+    </script>
+</body>
+</html>
